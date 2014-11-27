@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Resque multiselect
 // @namespace    resque
-// @homepage     https://github.com/timo-p/userscripts/resque-multiselect
+// @homepage     https://github.com/timo-p/userscripts/tree/master/resque-multiselect
 // @version      0.1
 // @description  Select multiple failed jobs at once in resque web
 // @author       timo-p

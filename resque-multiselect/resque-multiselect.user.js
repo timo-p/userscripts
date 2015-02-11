@@ -2,7 +2,7 @@
 // @name         Resque multiselect
 // @namespace    resque
 // @homepage     https://github.com/timo-p/userscripts/tree/master/resque-multiselect
-// @version      0.1
+// @version      0.2
 // @description  Select multiple failed jobs at once in resque web
 // @author       timo-p
 // @match        */resque/failed*

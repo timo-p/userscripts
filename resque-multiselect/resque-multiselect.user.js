@@ -12,6 +12,8 @@
 var $selectAll = $('<input type="submit" onclick="return false;" value="Select all"></input>');
 var $retrySelected = $('<input type="submit" onclick="return false;" value="Retry selected"></input>');
 var $removeSelected = $('<input type="submit" onclick="return false;" value="Remove selected"></input>');
+var $retryAndRemoveSelected = $('<input type="submit" onclick="return false;" value="Retry and remove selected"></input>');
+var $progress = $('<span style="display: none;"></span>');
 
 var processSelected = function(type){
     var $elems = $('input.multiselect:checked');
@@ -37,13 +39,29 @@ var processSelected = function(type){
             return $a.data('id') < $b.data('id') ? 1 : -1;
         });
 
+        var pickType = type == 'retry_and_remove' ? 'retry' : type;
         var urls = [];
         $elems.each(function(i, elem){
             $elem = $(elem);
-            urls.push($elem.data(type));
+            if ($elem.data(pickType))
+              urls.push($elem.data(pickType));
         });
 
+        if (type == 'retry_and_remove')
+        {
+            $elems.each(function(i, elem){
+                $elem = $(elem);
+                urls.push($elem.data('remove'));
+            });
+        }
+
+        var counter = 0,
+            count = urls.length;
+        
+        $progress.show();
         var doRequest = function(url){
+            counter++;
+            $progress.html('Request '+counter+' of '+count);
             $.get(url, function(){
                 if (urls.length > 0)
                     doRequest(urls.shift());
@@ -67,9 +85,12 @@ $removeSelected.click(function(event){
 $retrySelected.click(function(event){
     processSelected('retry');
 });
+$retryAndRemoveSelected.click(function(event){
+    processSelected('retry_and_remove');
+});
 
 var $form = $('<form></form>');
-$form.append($selectAll).append($retrySelected).append($removeSelected);
+$form.append($selectAll).append($retrySelected).append($removeSelected).append($retryAndRemoveSelected).append('<br/>').append($progress);
 $('#main > h1').after($form);
 
 $('div.controls,div.retried').each(function(){

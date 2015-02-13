@@ -2,7 +2,7 @@
 // @name         Resque multiselect
 // @namespace    resque
 // @homepage     https://github.com/timo-p/userscripts/tree/master/resque-multiselect
-// @version      0.2
+// @version      0.3
 // @description  Select multiple failed jobs at once in resque web
 // @author       timo-p
 // @match        */resque/failed*
@@ -10,6 +10,7 @@
 // ==/UserScript==
 
 var $selectAll = $('<input type="submit" onclick="return false;" value="Select all"></input>');
+var $selectByClass = $('<input type="submit" onclick="return false;" value="Select all by class"></input>');
 var $retrySelected = $('<input type="submit" onclick="return false;" value="Retry selected"></input>');
 var $removeSelected = $('<input type="submit" onclick="return false;" value="Remove selected"></input>');
 var $retryAndRemoveSelected = $('<input type="submit" onclick="return false;" value="Retry and remove selected"></input>');
@@ -79,6 +80,18 @@ $selectAll.click(function(){
     $elem.data('select-all', $elem.data('select-all') ? false : true);
     $('input.multiselect'+checked).click();
 });
+$selectByClass.click(function(){
+	var klass = prompt("Class to select");
+    $('input.multiselect:checked').click();
+    if (klass === null || klass.length == 0)
+        return;
+
+    klass = klass.replace(/\\/g, '\\');
+    
+    $('[href*=/resque/failed/?class='+klass+']').each(function(i, elem){
+        $(elem).closest('li').find('input.multiselect:not(:checked)').click();
+    });
+});
 $removeSelected.click(function(event){
     processSelected('remove');
 });
@@ -90,7 +103,7 @@ $retryAndRemoveSelected.click(function(event){
 });
 
 var $form = $('<form></form>');
-$form.append($selectAll).append($retrySelected).append($removeSelected).append($retryAndRemoveSelected).append('<br/>').append($progress);
+$form.append($selectAll).append($selectByClass).append($retrySelected).append($removeSelected).append($retryAndRemoveSelected).append('<br/>').append($progress);
 $('#main > h1').after($form);
 
 $('div.controls,div.retried').each(function(){

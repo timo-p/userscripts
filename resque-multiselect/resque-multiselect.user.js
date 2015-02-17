@@ -30,6 +30,7 @@ var processSelected = function(type){
     {
         $retrySelected.attr('disabled', true);
         $removeSelected.attr('disabled', true);
+        $retryAndRemoveSelected.attr('disabled', true);
 
         $elems.sort(function(a, b){
             var $a = $(a);
